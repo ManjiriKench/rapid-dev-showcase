@@ -1,7 +1,8 @@
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, MapPin, User, Mail, Phone } from 'lucide-react';
+import { Calendar, MapPin, User, Mail } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 interface Post {
@@ -30,62 +31,80 @@ const PostCard = ({ post, onContact }: PostCardProps) => {
   const isLost = post.category === 'lost';
   
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+    <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 bg-white/80 backdrop-blur-sm border-white/20">
       <CardContent className="p-0">
         {post.image_url && (
-          <div className="aspect-video overflow-hidden">
+          <div className="aspect-video overflow-hidden relative">
             <img 
               src={post.image_url} 
               alt={post.title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
           </div>
         )}
         
-        <div className="p-4 space-y-3">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="font-semibold text-lg leading-tight">{post.title}</h3>
-            <div className="flex gap-2">
-              <Badge variant={isLost ? "destructive" : "default"}>
+        <div className="p-6 space-y-4">
+          <div className="flex items-start justify-between gap-3">
+            <h3 className="font-bold text-xl leading-tight text-gray-800 flex-1">{post.title}</h3>
+            <div className="flex gap-2 flex-shrink-0">
+              <Badge 
+                variant={isLost ? "destructive" : "default"}
+                className={isLost 
+                  ? "bg-gradient-to-r from-red-500 to-pink-500 text-white border-0 shadow-sm" 
+                  : "bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 shadow-sm"
+                }
+              >
                 {post.category.toUpperCase()}
               </Badge>
               {post.status !== 'active' && (
-                <Badge variant="secondary">
+                <Badge 
+                  variant="secondary"
+                  className="bg-gradient-to-r from-gray-400 to-gray-500 text-white border-0"
+                >
                   {post.status.toUpperCase()}
                 </Badge>
               )}
             </div>
           </div>
           
-          <p className="text-muted-foreground text-sm line-clamp-3">
+          <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
             {post.description}
           </p>
           
-          <div className="space-y-2 text-sm text-muted-foreground">
+          <div className="space-y-3 text-sm">
             {post.profiles?.full_name && (
-              <div className="flex items-center gap-2">
-                <User className="h-4 w-4" />
-                <span>{post.profiles.full_name}</span>
+              <div className="flex items-center gap-3 text-gray-600">
+                <div className="p-1.5 bg-blue-100 rounded-full">
+                  <User className="h-3 w-3 text-blue-600" />
+                </div>
+                <span className="font-medium">{post.profiles.full_name}</span>
               </div>
             )}
             
             {post.location && (
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
+              <div className="flex items-center gap-3 text-gray-600">
+                <div className="p-1.5 bg-purple-100 rounded-full">
+                  <MapPin className="h-3 w-3 text-purple-600" />
+                </div>
                 <span>{post.location}</span>
               </div>
             )}
             
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
+            <div className="flex items-center gap-3 text-gray-600">
+              <div className="p-1.5 bg-indigo-100 rounded-full">
+                <Calendar className="h-3 w-3 text-indigo-600" />
+              </div>
               <span>
                 Posted {formatDistanceToNow(new Date(post.date_posted))} ago
               </span>
             </div>
             
             {post.date_lost_found && (
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
+              <div className="flex items-center gap-3 text-gray-600">
+                <div className="p-1.5 bg-orange-100 rounded-full">
+                  <Calendar className="h-3 w-3 text-orange-600" />
+                </div>
                 <span>
                   {isLost ? 'Lost' : 'Found'} on {new Date(post.date_lost_found).toLocaleDateString()}
                 </span>
@@ -96,11 +115,11 @@ const PostCard = ({ post, onContact }: PostCardProps) => {
           {post.status === 'active' && (
             <Button 
               onClick={() => onContact(post.contact_info)}
-              className="w-full mt-4"
+              className="w-full mt-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg transition-all duration-200"
               variant="outline"
             >
               <Mail className="h-4 w-4 mr-2" />
-              Contact
+              Contact Owner
             </Button>
           )}
         </div>

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -103,33 +104,40 @@ const Index = () => {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <Navbar onCreatePost={() => setShowPostForm(true)} />
       
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-4">Lost & Found Community</h1>
-          <p className="text-xl text-muted-foreground mb-6">
+        <div className="text-center mb-12">
+          <div className="relative">
+            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+              Lost & Found Community
+            </h1>
+            <div className="absolute -top-2 -left-4 text-6xl opacity-20">🔍</div>
+            <div className="absolute -top-4 -right-8 text-4xl opacity-20">💝</div>
+          </div>
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
             Help reunite people with their lost items or find the owner of something you found
           </p>
           
           {!user && (
-            <div className="bg-card p-6 rounded-lg border max-w-md mx-auto">
-              <p className="text-sm text-muted-foreground mb-4">
+            <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl border border-white/20 shadow-lg max-w-md mx-auto">
+              <div className="text-4xl mb-4">🤝</div>
+              <p className="text-gray-600 mb-6">
                 Join our community to post lost or found items
               </p>
-              <Button asChild className="w-full">
+              <Button asChild className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg">
                 <a href="/auth">Sign Up / Sign In</a>
               </Button>
             </div>
@@ -137,37 +145,44 @@ const Index = () => {
         </div>
 
         {/* Search and Filters */}
-        <SearchFilters
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          categoryFilter={categoryFilter}
-          setCategoryFilter={setCategoryFilter}
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-          onClearFilters={clearFilters}
-        />
+        <div className="mb-8">
+          <SearchFilters
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            categoryFilter={categoryFilter}
+            setCategoryFilter={setCategoryFilter}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            onClearFilters={clearFilters}
+          />
+        </div>
 
         {/* Posts Grid */}
         <div className="mt-8">
           {filteredPosts.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-lg font-semibold mb-2">No items found</h3>
-              <p className="text-muted-foreground mb-4">
-                {posts.length === 0 
-                  ? "Be the first to post a lost or found item!" 
-                  : "Try adjusting your search filters."
-                }
-              </p>
-              {user && posts.length === 0 && (
-                <Button onClick={() => setShowPostForm(true)}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Post First Item
-                </Button>
-              )}
+            <div className="text-center py-16">
+              <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-12 max-w-md mx-auto shadow-lg border border-white/20">
+                <div className="text-8xl mb-6">🔍</div>
+                <h3 className="text-2xl font-semibold mb-4 text-gray-800">No items found</h3>
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  {posts.length === 0 
+                    ? "Be the first to post a lost or found item!" 
+                    : "Try adjusting your search filters."
+                  }
+                </p>
+                {user && posts.length === 0 && (
+                  <Button 
+                    onClick={() => setShowPostForm(true)}
+                    className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Post First Item
+                  </Button>
+                )}
+              </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredPosts.map((post) => (
                 <PostCard
                   key={post.id}
