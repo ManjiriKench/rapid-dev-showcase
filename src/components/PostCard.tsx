@@ -2,7 +2,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, MapPin, User, Mail } from 'lucide-react';
+import { Calendar, MapPin, User, Mail, Trash2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 interface Post {
@@ -25,13 +25,16 @@ interface Post {
 interface PostCardProps {
   post: Post;
   onContact: (contactInfo: string) => void;
+  onDelete: (postId: string) => void;
+  currentUserId?: string;
 }
 
-const PostCard = ({ post, onContact }: PostCardProps) => {
+const PostCard = ({ post, onContact, onDelete, currentUserId }: PostCardProps) => {
   const isLost = post.category === 'lost';
+  const isOwner = currentUserId === post.user_id;
   
   return (
-    <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 bg-white/80 backdrop-blur-sm border-white/20">
+    <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 bg-white/80 backdrop-blur-sm border-white/20 relative">
       <CardContent className="p-0">
         {post.image_url && (
           <div className="aspect-video overflow-hidden relative">
@@ -45,6 +48,16 @@ const PostCard = ({ post, onContact }: PostCardProps) => {
         )}
         
         <div className="p-6 space-y-4">
+          {isOwner && (
+            <Button
+              onClick={() => onDelete(post.id)}
+              variant="ghost"
+              size="icon"
+              className="absolute top-4 right-4 h-8 w-8 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
           <div className="flex items-start justify-between gap-3">
             <h3 className="font-bold text-xl leading-tight text-gray-800 flex-1">{post.title}</h3>
             <div className="flex gap-2 flex-shrink-0">

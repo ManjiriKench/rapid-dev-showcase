@@ -87,6 +87,36 @@ const Index = () => {
     }
   };
 
+  const handleDeletePost = async (postId: string) => {
+    try {
+      const { error } = await supabase
+        .from('posts')
+        .delete()
+        .eq('id', postId);
+
+      if (error) {
+        toast({
+          title: "Failed to delete post",
+          description: "Please try again.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Post deleted",
+          description: "Your post has been removed successfully."
+        });
+        fetchPosts();
+      }
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      toast({
+        title: "Failed to delete post",
+        description: "Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const filteredPosts = posts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          post.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -188,6 +218,8 @@ const Index = () => {
                   key={post.id}
                   post={post}
                   onContact={handleContact}
+                  onDelete={handleDeletePost}
+                  currentUserId={user?.id}
                 />
               ))}
             </div>
