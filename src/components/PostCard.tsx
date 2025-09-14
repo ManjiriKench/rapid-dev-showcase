@@ -11,7 +11,7 @@ interface Post {
   description: string;
   category: string;
   status: string;
-  contact_info: string;
+  contact_info?: string; // Made optional for unauthenticated users
   location: string | null;
   image_url: string | null;
   date_posted: string;
@@ -27,11 +27,13 @@ interface PostCardProps {
   onContact: (contactInfo: string) => void;
   onDelete: (postId: string) => void;
   currentUserId?: string;
+  isAuthenticated?: boolean;
 }
 
-const PostCard = ({ post, onContact, onDelete, currentUserId }: PostCardProps) => {
+const PostCard = ({ post, onContact, onDelete, currentUserId, isAuthenticated }: PostCardProps) => {
   const isLost = post.category === 'lost';
   const isOwner = currentUserId === post.user_id;
+  const hasContactInfo = post.contact_info && isAuthenticated;
   
   return (
     <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 bg-white/80 backdrop-blur-sm border-white/20 relative">
@@ -126,14 +128,25 @@ const PostCard = ({ post, onContact, onDelete, currentUserId }: PostCardProps) =
           </div>
           
           {post.status === 'active' && (
-            <Button 
-              onClick={() => onContact(post.contact_info)}
-              className="w-full mt-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg transition-all duration-200"
-              variant="outline"
-            >
-              <Mail className="h-4 w-4 mr-2" />
-              Contact Owner
-            </Button>
+            <>
+              {hasContactInfo ? (
+                <Button 
+                  onClick={() => onContact(post.contact_info!)}
+                  className="w-full mt-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg transition-all duration-200"
+                  variant="outline"
+                >
+                  <Mail className="h-4 w-4 mr-2" />
+                  Contact Owner
+                </Button>
+              ) : (
+                <div className="w-full mt-6 p-3 bg-gray-100 border border-gray-200 rounded-lg text-center">
+                  <Mail className="h-4 w-4 mx-auto mb-2 text-gray-400" />
+                  <p className="text-sm text-gray-600">
+                    Sign in to view contact information
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </CardContent>

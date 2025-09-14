@@ -17,7 +17,7 @@ interface Post {
   description: string;
   category: string;
   status: string;
-  contact_info: string;
+  contact_info?: string; // Made optional for unauthenticated users
   location: string | null;
   image_url: string | null;
   date_posted: string;
@@ -39,14 +39,24 @@ const Index = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [user]); // Re-fetch when user authentication changes
 
   const fetchPosts = async () => {
     try {
       let query = supabase
         .from('posts')
         .select(`
-          *,
+          id,
+          title,
+          description,
+          category,
+          status,
+          location,
+          image_url,
+          date_posted,
+          date_lost_found,
+          user_id,
+          ${user ? 'contact_info,' : ''}
           profiles (
             full_name
           )
@@ -220,6 +230,7 @@ const Index = () => {
                   onContact={handleContact}
                   onDelete={handleDeletePost}
                   currentUserId={user?.id}
+                  isAuthenticated={!!user}
                 />
               ))}
             </div>
