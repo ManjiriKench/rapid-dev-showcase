@@ -17,7 +17,7 @@ interface Post {
   description: string;
   category: string;
   status: string;
-  contact_info?: string; // Made optional for unauthenticated users
+  contact_info: string; // Now always present but may be masked
   location: string | null;
   image_url: string | null;
   date_posted: string;
@@ -39,24 +39,14 @@ const Index = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, [user]); // Re-fetch when user authentication changes
+  }, []); // Remove user dependency since we now use the secure view
 
   const fetchPosts = async () => {
     try {
       let query = supabase
-        .from('posts')
+        .from('posts_with_masked_contact')
         .select(`
-          id,
-          title,
-          description,
-          category,
-          status,
-          location,
-          image_url,
-          date_posted,
-          date_lost_found,
-          user_id,
-          ${user ? 'contact_info,' : ''}
+          *,
           profiles (
             full_name
           )
