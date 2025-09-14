@@ -102,65 +102,13 @@ export type Database = {
       }
     }
     Views: {
-      posts_public: {
-        Row: {
-          category: string | null
-          contact_info: string | null
-          created_at: string | null
-          date_lost_found: string | null
-          date_posted: string | null
-          description: string | null
-          id: string | null
-          image_url: string | null
-          location: string | null
-          status: string | null
-          title: string | null
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          category?: string | null
-          contact_info?: never
-          created_at?: string | null
-          date_lost_found?: string | null
-          date_posted?: string | null
-          description?: string | null
-          id?: string | null
-          image_url?: string | null
-          location?: string | null
-          status?: string | null
-          title?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          category?: string | null
-          contact_info?: never
-          created_at?: string | null
-          date_lost_found?: string | null
-          date_posted?: string | null
-          description?: string | null
-          id?: string | null
-          image_url?: string | null
-          location?: string | null
-          status?: string | null
-          title?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "posts_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["user_id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      can_view_contact_info: {
+        Args: { post_user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
